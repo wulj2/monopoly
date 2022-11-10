@@ -2,6 +2,7 @@
 #define MONOPOLY_H
 
 
+#include "cell.h"
 #include "dice.h"
 #include "board.h"
 #include <ctype.h>
@@ -9,20 +10,8 @@
 #include <stdint.h>
 #include <string.h>
 
-#define OWN_BY_NON_MASK 0
-#define OWN_BY_USER_MASK 1
-#define OWN_BY_PC_MASK 2
-
 #define IDX4USER 0
 #define IDX4PC 1
-
-
-/* cell of player board */
-struct cell_t{
-    uint8_t umask = 0; // ownership mask id(0x0:none, 0x1:user, 0x2:PC)
-    uint8_t imask = 0; // invest mask id(0x0:none, 0x1:user, 0x2:PC)
-    int32_t price = 0; // cell price, random set in [10, 300] initially
-};
 
 /* player */
 struct player_t{
@@ -68,7 +57,6 @@ struct opt_t{
     // board
     cell_t** pcells = NULL; // board cell internal
     board_t* pboard = NULL; // board for drawing
-    uint8_t* uids = NULL; // board plot info
     int maxcw = 4; // max cell width
     // pps
     int32_t init_asset = 5000; // init assets

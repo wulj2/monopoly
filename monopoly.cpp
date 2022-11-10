@@ -54,24 +54,24 @@ void opt_t::init(){
     // init board
     pboard = new board_t();
     pboard->init(maxcw, nrow, ncol);
-    uids = (uint8_t*)malloc(tot_cell*sizeof(uint8_t));
-    uids[idx4go] = SYMBOIDX4GO;
-    uids[idx4jail] = SYMBOIDX4JAIL;
 }
 
 void opt_t::show(){
+    fprintf(stderr, "%s User status\n", pboard->horiz_empt);
+    fprintf(stderr, "%s ┌----------┬----------┬----------┐\n", pboard->horiz_empt);
+    fprintf(stderr, "%s |%-10s|%-10s|%-10s|\n", pboard->horiz_empt, "User", "Assets", "Pos");
     for(int i = 0; i < 2; ++i){
-        fprintf(stderr, "User Name:%s\n", pps[i]->uname);
-        fprintf(stderr, "User Assets:%d\n", pps[i]->asset);
-        fprintf(stderr, "User Bankrupt? %c\n", pps[i]->bankrupt() ? 'Y' : 'N');
+        fprintf(stderr, "%s ├----------┼----------┼----------┤\n", pboard->horiz_empt);
+        fprintf(stderr, "%s |%-10s|%-10d|%-10d|\n", pboard->horiz_empt, pps[i]->uname, pps[i]->asset, pps[i]->pos);
     }
-    pboard->draw(uids);
+    fprintf(stderr, "%s └----------┴----------┴----------┘\n", pboard->horiz_empt);
+    pboard->draw(pcells);
 }
 
 void opt_t::getans(const char* pre){
     ans = '\0';
     do{
-        fprintf(stderr, "\n%s or not(n/y):", pre);
+        fprintf(stderr, "%s or not(n/y):", pre);
         scanf(" %c", &ans);
     }while(toupper(ans) != 'Y' && toupper(ans) != 'N');
     ans = toupper(ans);
@@ -91,6 +91,7 @@ void opt_t::move(player_t* p){
         return;
     }
     if(pcells[p->pos]->umask == OWN_BY_NON_MASK){ // not occupied, just buy/invest
+        fprintf(stderr, "cell %d price is %d\n", p->pos, pcells[p->pos]->price);
         getans("Buy");
         if(ans == 'Y'){
             p->asset -= pcells[p->pos]->price;
@@ -101,7 +102,6 @@ void opt_t::move(player_t* p){
                 pcells[p->pos]->imask |= p->uid;
             }
             pcells[p->pos]->umask |= p->uid;
-            uids[p->pos] = p->uid;
         }
         return;
     }
@@ -114,7 +114,9 @@ void opt_t::move(player_t* p){
         }
         if(pcells[p->pos]->imask & pcells[p->pos]->umask) fine += fine4buyoff;
         if(fine > fine4hitopm) fine = fine4hitopm;
-        p->asset -= fine * pcells[p->pos]->price;
+        fine *= pcells[p->pos]->price;
+        fprintf(stderr, "%s fined by %d\n", p->uname, (int)fine);
+        p->asset -= fine;
         return;
     }
 }
@@ -131,10 +133,17 @@ void opt_t::run1round(){
         getans("Continue");
         if(ans == 'N') break;
         pps[IDX4USER]->rstep = pd4step->roll();
-        fprintf(stderr, "rolling dice for User and got:%d\n", pps[IDX4USER]->rstep);
+        fprintf(stderr, "rolling dice for User(p:%d,a:%d) and got:%d\n", 
+                        pps[IDX4USER]->pos,
+                        pps[IDX4USER]->asset,
+                        pps[IDX4USER]->rstep);
         move(pps[IDX4USER]);
+        show();
         pps[IDX4PC]->rstep = pd4step->roll();
-        fprintf(stderr, "rolling dice for PC and got:%d\n", pps[IDX4PC]->rstep);
+        fprintf(stderr, "rolling dice for PC(p:%d,a:%d) and got:%d\n",
+                        pps[IDX4PC]->pos,
+                        pps[IDX4PC]->asset,
+                        pps[IDX4PC]->rstep);
         move(pps[IDX4PC]);
     }
 }

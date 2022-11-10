@@ -1,6 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include "cell.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,6 +32,7 @@ struct board_t{
     int ncol = 8;
     int ttc = 0;
     int max_word_len = 4;
+    int ind_word_len = 3;
     char* horiz_mask = NULL;
     char* horiz_empt = NULL;
 
@@ -38,7 +40,7 @@ struct board_t{
     ~board_t();
 
     void init(int mwl, int nr, int nc);
-    void draw(uint8_t* a);
+    void draw(cell_t** pcells);
 };
 
 #endif
