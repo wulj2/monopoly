@@ -60,14 +60,14 @@ void opt_t::init(){
 }
 
 void opt_t::show(){
-    fprintf(stderr, "%s User status\n", pboard->horiz_empt);
-    fprintf(stderr, "%s ┌----------┬----------┬----------┐\n", pboard->horiz_empt);
-    fprintf(stderr, "%s |%-10s|%-10s|%-10s|\n", pboard->horiz_empt, "User", "Assets", "Pos");
+    fprintf(stderr, "%sUser status\n", pboard->horiz_empt);
+    fprintf(stderr, "%s┌----------┬----------┬----------┐\n", pboard->horiz_empt);
+    fprintf(stderr, "%s|%-10s|%-10s|%-10s|\n", pboard->horiz_empt, "User", "Assets", "Pos");
     for(int i = 0; i < 2; ++i){
-        fprintf(stderr, "%s ├----------┼----------┼----------┤\n", pboard->horiz_empt);
-        fprintf(stderr, "%s |%-10s|%-10d|%-10d|\n", pboard->horiz_empt, pps[i]->uname, pps[i]->asset, pps[i]->pos);
+        fprintf(stderr, "%s├----------┼----------┼----------┤\n", pboard->horiz_empt);
+        fprintf(stderr, "%s|%-10s|%-10d|%-10d|\n", pboard->horiz_empt, pps[i]->uname, pps[i]->asset, pps[i]->pos);
     }
-    fprintf(stderr, "%s └----------┴----------┴----------┘\n", pboard->horiz_empt);
+    fprintf(stderr, "%s└----------┴----------┴----------┘\n", pboard->horiz_empt);
     pboard->draw(pcells);
 }
 
