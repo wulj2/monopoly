@@ -152,8 +152,8 @@ void opt_t::run1round(){
 }
 
 bool opt_t::valid(){
-    if(nrow < 1 || ncol < 1){
-        fprintf(stderr, "row and colum of board must both be positive and larger than 1\n");
+    if(nrow < BOARD_MIN_DIM || ncol < BOARD_MIN_DIM){
+        fprintf(stderr, "row and column must be greater than %d!\n", BOARD_MIN_DIM);
         return false;
     }
     return true;

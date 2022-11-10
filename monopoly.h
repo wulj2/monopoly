@@ -15,6 +15,8 @@
 #define IDX4USER 0
 #define IDX4PC 1
 
+#define BOARD_MIN_DIM 3
+
 /* player */
 struct player_t{
     uint8_t uid = 0; // 0x0:none, 0x1:user, 0x2:PC
