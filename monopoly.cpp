@@ -30,6 +30,9 @@ opt_t::~opt_t(){
 void opt_t::init(){
     if(initialized) return;
     // init board
+    tot_cell = 2*(nrow+ncol)-4;
+    idx4go = 0;
+    idx4jail = nrow+ncol-2;
     dice_t* pdice = new dice_t();
     pdice->init(cp_min, cp_max);
     pcells = (cell_t**)malloc(tot_cell*sizeof(cell_t*));
@@ -148,8 +151,47 @@ void opt_t::run1round(){
     }
 }
 
-int main(){
+bool opt_t::valid(){
+    if(nrow < 1 || ncol < 1){
+        fprintf(stderr, "row and colum of board must both be positive and larger than 1\n");
+        return false;
+    }
+    return true;
+}
+
+void mp_usage(opt_t* opt, char* arg0){
+    fprintf(stderr, "\n");
+    fprintf(stderr, "Program: a siple version monopoly game\n\n");
+    fprintf(stderr, "Usage: %s [options]\n\n", arg0);
+    fprintf(stderr, "Options: -r INT  row number of board [%d]\n", opt->nrow);
+    fprintf(stderr, "         -c INT  col number of board [%d]\n", opt->ncol);
+    fprintf(stderr, "         -a INT  initial asset for users [%d]\n", opt->init_asset);
+    fprintf(stderr, "\n");
+}
+
+int mp_main(int argc, char** argv){
     opt_t opt;
-    opt.run1round();
+    if(argc == 1) {
+        mp_usage(&opt, argv[0]);
+        return 0;
+    }
+    int c = -1;
+    while((c = getopt(argc, argv, "r:c:a:h")) >= 0) {
+        switch(c) {
+            case 'r': opt.nrow = atoi(optarg); break;
+            case 'c': opt.ncol = atoi(optarg); break;
+            case 'a': opt.init_asset = atoi(optarg); break;
+            case 'h': mp_usage(&opt, argv[0]); return 0; break;
+            default: break;
+        }
+    }
+    if(opt.valid()){
+        opt.init();
+        opt.run1round();
+    }
     return 0;
+}
+
+int main(int argc, char** argv){
+    return mp_main(argc, argv);
 }

@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <libgen.h>
+#include <unistd.h>
 
 #define IDX4USER 0
 #define IDX4PC 1
@@ -68,11 +70,15 @@ struct opt_t{
     opt_t(){};
     ~opt_t();
 
+    bool valid();
     void init();
     void show();
     void getans(const char* pre);
     void move(player_t* p);
     void run1round();
 };
+
+void mp_usage(opt_t* opt, char* arg0);
+int mp_main(int argc, char** argv);
 
 #endif
